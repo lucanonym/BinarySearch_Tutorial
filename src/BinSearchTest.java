@@ -1,47 +1,67 @@
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.StringJoiner;
-import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class BinSearchTest {
+    private static StringJoiner joiner;
+    private static final String[] testValid = new String[]{"a", "c", "d", "e", "f", "g", "h"};
+    private static final SomeUtil util = new SomeUtil();
 
 
-    @Test
-    public void binSearchTest() {
-        String[] testValid = {"a", "c", "d", "e", "f", "g", "h"};
-        String[] notValid = {"b", "C", "Hallo", "", "f"};
-        SomeUtil bin = new SomeUtil();
-        for (String valid : testValid) {
-            assertEquals(valid, bin.binSearch(testValid, valid), "String should be found");
+    @BeforeAll
+    public static void generateJoiner() {
+        String[] test = {"first", "second", "third", "fourth", ""};
+        StringJoiner joiner = new StringJoiner(System.lineSeparator());
+        for (String testString : test) {
+            if (!testString.isEmpty()) joiner.add("Item: " + testString);
         }
-        for(String notVal : notValid) {
-            assertNull(bin.binSearch(testValid, notVal), "String should be found");
-        }
+        BinSearchTest.joiner = joiner;
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"a", "c", "d", "e", "f", "g", "h"})
+    public void binSearchTest(String toTest) {
+        assertEquals(toTest, BinSearchTest.util.binSearch(testValid, toTest), "String should be found");
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"hallo", "i", "am", "not", "valid"})
+    public void binSearchFail(String toTest) {
+        assertNull(BinSearchTest.util.binSearch(testValid, toTest), "String should be found");
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    public void testNullAndEmptyBinSearch(String test) {
+        assertNull(BinSearchTest.util.binSearch(testValid, test));
+    }
+
+    @ParameterizedTest
+    @NullSource
+    public void testNullAndEmptyPrettyPrint(List<String> test) {
+        assertThrows(IllegalArgumentException.class, () -> BinSearchTest.util.prettyPrint(test));
     }
 
     @Test
     public void prettyPrintTest() {
-        SomeUtil util = new SomeUtil();
-        String[] test = {"first", "second", "third", "fourth", ""};
-        List<Integer> anotherTest = List.of(1, 2, 3, 4, 5, 6, 7);
-        StringJoiner joiner = new StringJoiner(System.lineSeparator());
-        for (String testString : test) {
-            joiner.add("Item: " + testString);
-        }
-        assertEquals(joiner.toString() ,util.prettyPrint(Arrays.asList(test)), "Should be pretty printed");
-        String anotherExam = anotherTest.stream()
-                .map(elem -> "Item: " + elem)
-                .collect(Collectors.joining(System.lineSeparator()));
-        assertEquals(anotherExam, util.prettyPrint(anotherTest), "Should be pretty printed");
-
+        assertEquals(joiner.toString(),
+                BinSearchTest.util.prettyPrint(Arrays.asList("first", "second", "third", "fourth", "")),
+                "Should be pretty printed");
     }
 
 
 
 }
+
+
