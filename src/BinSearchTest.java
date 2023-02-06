@@ -15,8 +15,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class BinSearchTest {
     private static StringJoiner joiner;
-    private static final String[] testValid = new String[]{"a", "c", "d", "e", "f", "g", "h"};
-    private static final SomeUtil util = new SomeUtil();
+    private final String[] testValid = new String[]{"a", "c", "d", "e", "f", "g", "h"};
+    private final SomeUtil util = new SomeUtil();
 
 
     @BeforeAll
@@ -32,31 +32,31 @@ public class BinSearchTest {
     @ParameterizedTest
     @ValueSource(strings = {"a", "c", "d", "e", "f", "g", "h"})
     public void binSearchTest(String toTest) {
-        assertEquals(toTest, BinSearchTest.util.binSearch(testValid, toTest), "String should be found");
+        assertEquals(toTest, this.util.binSearch(testValid, toTest), "String should be found");
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"hallo", "i", "am", "not", "valid"})
     public void binSearchFail(String toTest) {
-        assertNull(BinSearchTest.util.binSearch(testValid, toTest), "String should be found");
+        assertNull(this.util.binSearch(testValid, toTest), "String should be found");
     }
 
     @ParameterizedTest
     @NullAndEmptySource
     public void testNullAndEmptyBinSearch(String test) {
-        assertNull(BinSearchTest.util.binSearch(testValid, test));
+        assertNull(this.util.binSearch(testValid, test));
     }
 
     @ParameterizedTest
     @NullSource
     public void testNullAndEmptyPrettyPrint(List<String> test) {
-        assertThrows(IllegalArgumentException.class, () -> BinSearchTest.util.prettyPrint(test));
+        assertThrows(IllegalArgumentException.class, () -> this.util.prettyPrint(test));
     }
 
     @Test
     public void prettyPrintTest() {
         assertEquals(joiner.toString(),
-                BinSearchTest.util.prettyPrint(Arrays.asList("first", "second", "third", "fourth", "")),
+                this.util.prettyPrint(Arrays.asList("first", "second", "third", "fourth", "")),
                 "Should be pretty printed");
     }
 
